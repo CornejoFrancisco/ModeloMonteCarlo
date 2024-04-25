@@ -1,6 +1,7 @@
 package com.simulacion.montecarlo.entities.DTO;
 
 
+import com.simulacion.montecarlo.entities.Pedido;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,11 +11,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class FilaDto {
     private Integer dia;
-    private float rndDemanda;
+    private double rndDemanda;
     private Integer cae;
-    private float rndDemora;
-    private Integer cantidadDia;
-    private Integer pedido;
+    private Pedido pedido;
     private Integer stock;
     private Integer ko;
     private Integer km;
