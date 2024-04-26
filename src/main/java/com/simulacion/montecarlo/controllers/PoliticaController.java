@@ -18,10 +18,5 @@ public class PoliticaController {
     }
 
 
-    @GetMapping("/")
-    public ResponseEntity<FilaDto> getUltima(){
-        FilaDtoActual entity = new FilaDtoActual();
-        FilaDto value = politicaService.getUltimafila(entity);
-        return ResponseEntity.ok(value);
-    }
+
 }

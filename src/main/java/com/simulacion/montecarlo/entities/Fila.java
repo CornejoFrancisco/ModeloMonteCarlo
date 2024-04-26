@@ -13,13 +13,13 @@ public class Fila{
     private double rndDemanda;
     private Integer cae;
     private Pedido pedido;
-    private Integer demora;
+    private Integer llegada;
     private Integer stock;
     private Integer km;
     private Integer ks;
     private Integer costo;
     private Integer costoSuma;
-    private double promedio;
+    private float promedio;
 
 
 

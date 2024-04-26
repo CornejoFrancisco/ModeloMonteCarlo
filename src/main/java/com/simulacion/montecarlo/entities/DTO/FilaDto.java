@@ -10,10 +10,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class FilaDto {
-    private Integer dia;
+    private int dia;
     private double rndDemanda;
     private Integer cae;
     private Pedido pedido;
+    private Integer llegada;
     private Integer stock;
     private Integer ko;
     private Integer km;
@@ -22,4 +23,16 @@ public class FilaDto {
     private Integer costoSuma;
     private float promedio;
 
+    public FilaDto(int i,
+                   double random1,
+                   Integer intervaloDemanda,
+                   Pedido pedido,
+                   Integer intervaloDemora,
+                   Integer stock,
+                   Integer costoPedido,
+                   Integer costoMantenimiento,
+                   Integer costoRuptura
+            , Integer costo,
+                   Integer costo1) {
+    }
 }
