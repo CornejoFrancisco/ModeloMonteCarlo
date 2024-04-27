@@ -4,15 +4,14 @@ import com.simulacion.montecarlo.entities.DTO.FilaDto;
 import com.simulacion.montecarlo.entities.DTO.FilaDtoActual;
 import com.simulacion.montecarlo.entities.Pedido;
 import com.simulacion.montecarlo.services.PoliticaServis;
+import com.zaxxer.hikari.util.SuspendResumeLock;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Service
 public class PoliticaBServiceImpl implements PoliticaServis {
-
-
-
-
     @Override
     public FilaDtoActual actualizacionFila(FilaDto fila_anterior, FilaDtoActual fila_nueva, Pedido pedido_solicitado) {
         FilaDto filaAnterior = fila_anterior;
@@ -36,7 +35,7 @@ public class PoliticaBServiceImpl implements PoliticaServis {
 
     @Override
     public List<FilaDto> carga_fila(Integer cantidad, double[] probabilidad_demanada, double[] probabilidad_demora, Integer desde, Integer hasta, Integer stock_solicitado) {
-        List< FilaDto> lista_fila = new ArrayList<>();
+        List< FilaDto> lista_fila1 = new ArrayList<>();
         Integer stock = 20;
         Boolean solicitud_mostrar = Boolean.FALSE;
         Soporte soporte = new Soporte();
@@ -67,7 +66,8 @@ public class PoliticaBServiceImpl implements PoliticaServis {
         Integer contador = 0;
         Integer costo_pedido = 0;
 
-        for(int i=0; i < cantidad; i ++){
+
+        for(int i=0; i <= cantidad; i ++){
             if(i == 0){
                 /*Generacion de numero random*/
                 double random1 = soporte.numeroRandom();
@@ -75,36 +75,44 @@ public class PoliticaBServiceImpl implements PoliticaServis {
 
                 /*Generador de intervalo */
                 Integer intervalo_demanda = soporte.calculoValorIntervalo(vector_valores, probabilidad_demanada, random1);
-                Integer intervalo_demora = soporte.calculoValorIntervalo(vector_valores, probabilidad_demora, random2);
+                Integer intervalo_demora = soporte.calculoValorIntervalo(vector_demora, probabilidad_demora, random2);
+
                 stock_solicitado = intervalo_demanda;
-                costo_pedido = soporte.costoPedido(costo_decena,stock_solicitado);
+                costo_pedido = soporte.costoPedido(costo_decena, stock_solicitado);
 
                 /* Creacion de la orden de pedido*/
-                pedido = new Pedido(i, i + intervalo_demora, stock_solicitado, random2, 250);
+                pedido = new Pedido(i + 1 , i + 1  + intervalo_demora, stock_solicitado, random2, costo_pedido);
 
-                dia_llegada_pedido = i + intervalo_demora;
+                dia_llegada_pedido = i + 1 + intervalo_demora;
                 costo_mantenimiento = 3 * stock;
 
                 ArrayList<Integer> datos = soporte.calculoCostoruptura(stock, intervalo_demanda);
                 costo_ruptura = datos.get(0);
                 stock = datos.get(1);
 
-                Integer costo = soporte.costo(pedido.getCosto_pedido(), costo_mantenimiento, 0 );
 
-                FilaDto nueva_fila = new FilaDto(i, random1, intervalo_demanda, pedido, intervalo_demora, stock,costo_pedido, costo_mantenimiento, costo_ruptura, costo, costo, costo);
-                lista_fila.add(nueva_fila);
+                Integer costo = soporte.costo(pedido.getCosto_pedido(), costo_mantenimiento, costo_ruptura );
+
+                FilaDto nueva_fila = new FilaDto(i + 1, random1, intervalo_demanda, pedido, intervalo_demora, stock,costo_pedido, costo_mantenimiento, costo_ruptura, costo, costo, costo);
+
+                lista_fila1.add(nueva_fila);
+                System.out.println(nueva_fila);
+
                 contador += 1;
-                Boolean primerDia = Boolean.TRUE;
             }else{
+
+
                 /*Aca ya se comienza a hacer la segunda fila*/
-                Pedido pedido1 = null;
-                FilaDto elemento = lista_fila.get(i - 1);
+                FilaDto elemento = lista_fila1.get(0);
+
+                Pedido pedido1 = elemento.getPedido();
                 stock = elemento.getStock();
                 double random1 = soporte.numeroRandom();
                 Integer intervalo_demanda = soporte.calculoValorIntervalo(vector_valores, probabilidad_demanada, random1);
                 stock_solicitado += intervalo_demanda;
 
                 costo_pedido = 0;
+                System.out.println(stock);
                 ArrayList<Integer> datos = soporte.calculoCostoruptura(stock, intervalo_demanda);
                 costo_ruptura = datos.get(0);
                 stock = datos.get(1);
@@ -129,7 +137,7 @@ public class PoliticaBServiceImpl implements PoliticaServis {
 
                     costo_pedido = soporte.costoPedido(costo_decena, stock_solicitado);
 
-                    pedido1 = new Pedido(i, i + intervalo_demora, stock_solicitado, random2, 250);
+                    pedido1 = new Pedido(i + 1, i + 1 + intervalo_demora, stock_solicitado, random2, 250);
 
                     stock_solicitado = 0;
                 }
@@ -139,28 +147,37 @@ public class PoliticaBServiceImpl implements PoliticaServis {
 
                 Integer costo = soporte.costo(costo_pedido, costo_mantenimiento, costo_ruptura);
                 Integer costo_suma = elemento.getCosto() + costo;
+                Integer promedio = costo_suma / (i+ 1);
 
-                FilaDto nueva_fila = new FilaDto(i, random1,
+                FilaDto nueva_fila = new FilaDto(
+                        i + 1,
+                        random1,
                         intervalo_demanda,
                         pedido1,
-                        pedido1.getDia_llegada() - pedido1.getDia_solicitado(),
+                        elemento.getLlegada(),
                         stock,
+                        costo_pedido,
                         costo_mantenimiento,
                         costo_ruptura,
                         costo,
-                        costo_suma, costo/i);
+                        costo_suma,
+                        promedio);
                 if(solicitud_mostrar){
                     System.out.print(nueva_fila);
                 }
-                if(i+ 1 == hasta){
-                    solicitud_mostrar = Boolean.FALSE;
+                if(hasta != null) {
+                    if (i + 1 == hasta) {
+                        solicitud_mostrar = Boolean.FALSE;
+                    }
                 }
-                lista_fila.add(nueva_fila);
-                lista_fila.remove(0);
+
+                lista_fila1.add(nueva_fila);
+                lista_fila1.remove(0);
 
             }
         }
-        return lista_fila;
+
+        return lista_fila1;
     }
 
 

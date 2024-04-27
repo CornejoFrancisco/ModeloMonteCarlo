@@ -23,16 +23,4 @@ public class FilaDto {
     private Integer costoSuma;
     private float promedio;
 
-    public FilaDto(int i,
-                   double random1,
-                   Integer intervaloDemanda,
-                   Pedido pedido,
-                   Integer intervaloDemora,
-                   Integer stock,
-                   Integer costoPedido,
-                   Integer costoMantenimiento,
-                   Integer costoRuptura
-            , Integer costo,
-                   Integer costo1) {
-    }
 }

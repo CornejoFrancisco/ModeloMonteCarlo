@@ -14,9 +14,6 @@ import java.util.Random;
 @Service
 public class PoliticaAServiceImpl implements PoliticaServis {
 
-
-
-
     @Override
     public FilaDtoActual actualizacionFila(FilaDto fila_anterior, FilaDtoActual fila_nueva, Pedido pedido_solicitado) {
         FilaDto filaAnterior = fila_anterior;
@@ -46,6 +43,8 @@ public class PoliticaAServiceImpl implements PoliticaServis {
         Integer stock = 20;
         Boolean solicitud_mostrar = Boolean.FALSE;
         Soporte soporte = new Soporte();
+        Integer costo_suma = 0;
+
         if(probabilidad_demanada == null){
             probabilidad_demanada = new double[]{0.05, 0.12, 0.18, 0.25, 0.22, 0.18};
         }
@@ -56,6 +55,7 @@ public class PoliticaAServiceImpl implements PoliticaServis {
         if(stock_solicitado == null){
             stock_solicitado = 200;
         }
+
         Boolean pedido_realizado = Boolean.TRUE;
         Pedido pedido;
         if(desde != null && hasta != null){
@@ -70,7 +70,7 @@ public class PoliticaAServiceImpl implements PoliticaServis {
         Integer costo_mantenimiento = 0;
         Integer costo_ruptura = 0;
 
-        for(int i=0; i < cantidad; i ++){
+        for(int i=0; i <= cantidad; i ++){
             if(i == 0){
                 /*Generacion de numero random*/
                 double random1 = soporte.numeroRandom();
@@ -96,17 +96,13 @@ public class PoliticaAServiceImpl implements PoliticaServis {
 
                 FilaDto nueva_fila = new FilaDto(i, random1, intervalo_demanda, pedido, intervalo_demora, stock, 250, costo_mantenimiento, costo_ruptura, costo, costo, costo);
                 lista_fila.add(nueva_fila);
-                if(solicitud_mostrar){
-                    soporte.mostrarFila(nueva_fila);
-                }
+
 
             }else{
                 /*Aca ya se comienza a hacer la segunda fila*/
-
                 FilaDto elemento = lista_fila.get(0);
-                System.out.println(elemento);
+
                 Pedido pedido1 = elemento.getPedido();
-                System.out.println(pedido1);
                 stock = elemento.getStock();
                 double random1 = soporte.numeroRandom();
                 Integer intervalo_demanda = soporte.calculoValorIntervalo(vector_valores, probabilidad_demanada, random1);
@@ -139,10 +135,13 @@ public class PoliticaAServiceImpl implements PoliticaServis {
                 costo_mantenimiento = 3 * stock;
 
                 Integer costo = soporte.costo(costo_pedido, costo_mantenimiento, costo_ruptura);
-                Integer costo_suma = elemento.getCosto() + costo;
+
+                costo_suma = elemento.getCostoSuma() + costo;
+                Integer promedio = costo_suma / (i+ 1);
+                System.out.println(promedio);
 
                 FilaDto nueva_fila = new FilaDto(
-                        i,
+                        i+ 1,
                         random1,
                         intervalo_demanda,
                         pedido1,
@@ -153,7 +152,7 @@ public class PoliticaAServiceImpl implements PoliticaServis {
                         costo_ruptura,
                         costo,
                         costo_suma,
-                        costo/i);
+                        promedio);
 
                 if(solicitud_mostrar){
                     soporte.mostrarFila(nueva_fila);
@@ -165,13 +164,10 @@ public class PoliticaAServiceImpl implements PoliticaServis {
                 }
                 lista_fila.add(nueva_fila);
                 lista_fila.remove(0);
-
             }
         }
         return lista_fila;
     }
-
-
 
 
 }

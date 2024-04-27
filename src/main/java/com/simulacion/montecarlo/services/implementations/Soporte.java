@@ -9,8 +9,9 @@ public class Soporte {
 
     public double numeroRandom() {
         Random random = new Random();
-        double numero_radom = random.nextDouble();
-        return numero_radom;
+        double numero_random1 = random.nextDouble();
+        double numero_random = Math.round(numero_random1 * 100.0) / 100.0;
+        return numero_random;
     }
 
     public Integer calculoValorIntervalo( Integer[] intervalos_valor, double[] valores_probabilidad, double valor_random) {
