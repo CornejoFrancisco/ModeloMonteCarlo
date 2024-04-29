@@ -67,6 +67,9 @@ public class PoliticaBServiceImpl implements PoliticaServis {
         Integer costo_pedido = 0;
 
 
+        List<FilaDto> lista_mostrar = new ArrayList<>();
+
+
         for(int i=0; i <= cantidad; i ++){
             if(i == 0){
                 /*Generacion de numero random*/
@@ -96,8 +99,9 @@ public class PoliticaBServiceImpl implements PoliticaServis {
                 FilaDto nueva_fila = new FilaDto(i + 1, random1, intervalo_demanda, pedido, intervalo_demora, stock,costo_pedido, costo_mantenimiento, costo_ruptura, costo, costo, costo);
 
                 lista_fila1.add(nueva_fila);
-                System.out.println(nueva_fila);
-
+                if(solicitud_mostrar){
+                    lista_mostrar.add(nueva_fila);
+                }
                 contador += 1;
             }else{
 
@@ -112,7 +116,6 @@ public class PoliticaBServiceImpl implements PoliticaServis {
                 stock_solicitado += intervalo_demanda;
 
                 costo_pedido = 0;
-                System.out.println(stock);
                 ArrayList<Integer> datos = soporte.calculoCostoruptura(stock, intervalo_demanda);
                 costo_ruptura = datos.get(0);
                 stock = datos.get(1);
@@ -170,9 +173,15 @@ public class PoliticaBServiceImpl implements PoliticaServis {
                         solicitud_mostrar = Boolean.FALSE;
                     }
                 }
+                if(solicitud_mostrar){
+                    lista_mostrar.add(nueva_fila);
+                }
 
                 lista_fila1.add(nueva_fila);
                 lista_fila1.remove(0);
+                if(cantidad == i +1){
+                    lista_fila1.addAll(lista_mostrar);
+                }
 
             }
         }

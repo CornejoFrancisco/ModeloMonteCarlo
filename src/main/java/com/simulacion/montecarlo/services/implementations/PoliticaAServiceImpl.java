@@ -44,6 +44,7 @@ public class PoliticaAServiceImpl implements PoliticaServis {
         Boolean solicitud_mostrar = Boolean.FALSE;
         Soporte soporte = new Soporte();
         Integer costo_suma = 0;
+        List<FilaDto> lista_mostrar = new ArrayList<>();
 
         if(probabilidad_demanada == null){
             probabilidad_demanada = new double[]{0.05, 0.12, 0.18, 0.25, 0.22, 0.18};
@@ -82,7 +83,7 @@ public class PoliticaAServiceImpl implements PoliticaServis {
 
 
                 /* Creacion de la orden de pedido*/
-                pedido = new Pedido(i, i + intervalo_demora, stock_solicitado, random2, 250);
+                pedido = new Pedido(i, i + intervalo_demora + 1, stock_solicitado, random2, 250);
 
                 dia_llegada_pedido = i + intervalo_demora;
                 costo_mantenimiento = 3 * stock;
@@ -94,8 +95,11 @@ public class PoliticaAServiceImpl implements PoliticaServis {
 
                 Integer costo = soporte.costo(pedido.getCosto_pedido(), costo_mantenimiento, 0 );
 
-                FilaDto nueva_fila = new FilaDto(i, random1, intervalo_demanda, pedido, intervalo_demora, stock, 250, costo_mantenimiento, costo_ruptura, costo, costo, costo);
+                FilaDto nueva_fila = new FilaDto(i + 1, random1, intervalo_demanda, pedido, intervalo_demora, stock, 250, costo_mantenimiento, costo_ruptura, costo, costo, costo);
                 lista_fila.add(nueva_fila);
+                if(solicitud_mostrar){
+                    lista_mostrar.add(nueva_fila);
+                }
 
 
             }else{
@@ -126,7 +130,7 @@ public class PoliticaAServiceImpl implements PoliticaServis {
                 if(80 > stock && pedido_realizado != Boolean.TRUE){
                     double random2 = soporte.numeroRandom();
                     Integer intervalo_demora = soporte.calculoValorIntervalo(vector_demora, probabilidad_demora, random2);
-                    pedido1 = new Pedido(i, i + intervalo_demora, 200, random2, 250);
+                    pedido1 = new Pedido(i + 1, i + 1 + intervalo_demora, 200, random2, 250);
                     dia_llegada_pedido = i + intervalo_demora;
                     costo_pedido = pedido1.getCosto_pedido();
                     pedido_realizado = Boolean.TRUE;
@@ -138,7 +142,6 @@ public class PoliticaAServiceImpl implements PoliticaServis {
 
                 costo_suma = elemento.getCostoSuma() + costo;
                 Integer promedio = costo_suma / (i+ 1);
-                System.out.println(promedio);
 
                 FilaDto nueva_fila = new FilaDto(
                         i+ 1,
@@ -162,8 +165,15 @@ public class PoliticaAServiceImpl implements PoliticaServis {
                         solicitud_mostrar = Boolean.FALSE;
                     }
                 }
+                if(solicitud_mostrar){
+                    lista_mostrar.add(nueva_fila);
+                }
+
                 lista_fila.add(nueva_fila);
                 lista_fila.remove(0);
+                if(cantidad == i +1){
+                    lista_fila.addAll(lista_mostrar);
+                }
             }
         }
         return lista_fila;
