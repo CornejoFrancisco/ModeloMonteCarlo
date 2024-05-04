@@ -1,10 +1,7 @@
 package com.simulacion.montecarlo.entities;
-
-import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.Internal;
 
 @Data
 @AllArgsConstructor
@@ -15,5 +12,4 @@ public class Pedido {
     private Integer cantidad_pedido;
     private double numero_random_solic;
     private Integer costo_pedido;
-
 }
