@@ -31,14 +31,7 @@ public class PoliticaController {
                                                     @RequestParam(value ="hasta", required = false) Integer hasta,
                                                     @RequestParam(value ="stock_soli", required = false) Integer stock_soli,
                                                     @RequestParam("servicio") String servicio) {
-        /*
-        double[] probabilidadDemanda = probabilidad_demanda != null ? probabilidad_demanda : new double[0];
-        double[] probabilidadDemora = probabilidad_demora != null ? probabilidad_demora : new double[0];
-        int desdeValor = desde != null ? desde : 0;
-        int hastaValor = hasta != null ? hasta : 0;
-        int stockSoliValor = stock_soli != null ? stock_soli : 0;
 
-         */
 
         PoliticaServis servicioSeleccionado = servicio.equalsIgnoreCase("A") ? politicaAService : politicaBService;
 

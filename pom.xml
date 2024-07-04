@@ -8,11 +8,11 @@
 		<version>3.1.5</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>alquileres</groupId>
-	<artifactId>alquileres</artifactId>
+	<groupId>MonteCarlos</groupId>
+	<artifactId>MonteCarlos</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>alquileres</name>
-	<description>Alquilers de tp</description>
+	<name>MonteCarlos</name>
+	<description>MonteCarlos</description>
 	<properties>
 		<java.version>17</java.version>
 	</properties>
